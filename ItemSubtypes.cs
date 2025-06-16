@@ -2,7 +2,9 @@ namespace VideoGame.Inventory {
 
     public class Armor : Item {
 
-        public Armor(string name = "Starting Armor",int? price = 0) : base(name,price) {
+        public int defense;
+
+        public Armor(string name = "Starting Armor", int? price = 0) : base(name, price) {
         }
     }
 
