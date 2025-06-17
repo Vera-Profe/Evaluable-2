@@ -1,4 +1,5 @@
-﻿using VideoGame;
+﻿using System.Reflection;
+using VideoGame;
 using VideoGame.Inventory;
 
 internal class Program
@@ -9,14 +10,16 @@ internal class Program
         var player = new Player();
         var inventario = new PlayerInventory(player, 2);
         var espada = new Sword("Espada Prueba");
-        inventario.Store(espada);
-        inventario.Drop(espada);
-        inventario.StoreAt(espada, 1);
-        var list = inventario.ListItems() as IItem?[];
-        inventario.Find(item => true);
-        inventario.Find(item => false);
+        var escudo = new Armor("Escudo Prueba");
 
         inventario.Find<Armor>(armor => armor.defense > 3);
 
+        var inventarioNPC = new NPCInventory(null, 2);
+        // var cofre = new ChestInventory([escudo, espada, escudo]);
+        // cofre = new ChestInventory(escudo,espada,escudo);
+        var cofre = ChestInventory.CreateWith(escudo, espada, escudo);
+
+
+       
     }
 }

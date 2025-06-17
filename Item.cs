@@ -30,7 +30,7 @@ namespace VideoGame.Inventory
         /// <summary>
         /// Especifica dónde está el Item
         /// </summary>
-        public PlayerInventory? Location { get; private set; }
+        public BaseInventory? Location { get; private set; }
 
 
         public Item(string name, int? price = 0)
@@ -42,7 +42,7 @@ namespace VideoGame.Inventory
         /// <summary>
         /// Cambia la ubicación actual del item
         /// </summary>
-        public void MoveTo(PlayerInventory? newLocation)
+        public void MoveTo(BaseInventory? newLocation)
         {
             Location = newLocation;
         }
