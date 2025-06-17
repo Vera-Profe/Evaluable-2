@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace VideoGame.Inventory {
 
-    public abstract class BaseInventory {
+    public abstract class BaseInventory:IInventory {
 
         /// <summary>
         /// Capacidad máxima del inventario
@@ -59,16 +59,17 @@ namespace VideoGame.Inventory {
         /// TODO: Implementar
         /// </summary>
         public virtual bool StoreAt(IItem item, int index) {
-            if (content[index] == item)
+            int foundAt = content.IndexOf(item);
+            if (foundAt == index)//Lo contiene en el mismo sitio
                 return true;
-            if (content[index] != null)
-                return false;
-            if (Contains(item))
+             if (foundAt != -1) //Lo contiene
                 return false;
             if (!isValidSlot(index))
                 return false;
             // Insertar    
             if (isValidIndex(index)) {
+                if (content[index] != null)
+                    return false;
                 ForceStore(item, index);
                 return true;
             }
@@ -107,7 +108,7 @@ namespace VideoGame.Inventory {
         /// TODO: Implementar
         /// </summary>
         public virtual IItem? GetItemAt(int index) {
-            if (isValidIndex(index))
+            if (!isValidIndex(index))
                 return null;
             return content[index];
         }
@@ -128,14 +129,14 @@ namespace VideoGame.Inventory {
         /// TODO: Implementar
         /// </summary>
         public virtual bool Drop(int index) {
-            if (isValidIndex(index))
+            if (!isValidIndex(index))
                 return false;
             ForceDrop(index);
             return false;
         }
 
         public virtual bool isValidIndex(int index) {
-            return index < 0 || index >= content.Count;
+            return index > 0 && index < content.Count;
         }
         
         /// <summary>
@@ -143,7 +144,7 @@ namespace VideoGame.Inventory {
         /// </summary>
         /// <param name="index"></param>
         public virtual bool isValidSlot(int index) {
-            return index < 0 || index >= Size;
+            return index > 0 && index < Size;
         }
 
 
@@ -195,7 +196,7 @@ namespace VideoGame.Inventory {
         /// <summary>
         /// TODO: Implementar
         /// </summary>
-        public virtual bool Transfer(IItem item, PlayerInventory target) {
+        public virtual bool Transfer(IItem item, IInventory target) {
             int index = content.IndexOf(item);
             if (index == -1)
                 return false;
@@ -207,5 +208,9 @@ namespace VideoGame.Inventory {
             ForceStore(item, index);
             return false;
         }
+
+        
+
+       
     }
 }

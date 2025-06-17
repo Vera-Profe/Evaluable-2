@@ -78,6 +78,6 @@ namespace VideoGame.Inventory {
         /// </summary>
         public bool Transfer(IItem item, IInventory target);
 
-        protected void ForceStore(IItem item, int index);
+
     }
 }

@@ -30,5 +30,28 @@ internal class Program
         tienda.Store(new Armor("Gold Armor", 100));
         tienda.Store(new Armor("Paper Armor", 0));
         tienda.Store(new Sword("Master Sword (Quest Item)", null));
+
+        tienda.StoreAt(new Sword("Espada Perdida", 0), 50);
+
+
+
+        //Conditional 
+        var conditional = new ConditionalInventory(
+            item => item is Item actualItem && actualItem.Price.HasValue
+        );
+
+        Func<IItem, bool> testCondition = item => {
+            Console.WriteLine(item.Name);
+            return true;
+        };
+
+        conditional.condition += testCondition;
+        conditional.condition -= testCondition;
+
+        conditional.Store(new Sword("Fallo", null));
+        conditional.Store(new Sword("Éxito", 100));
+        
+        
+
     }
 }

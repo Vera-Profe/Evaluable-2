@@ -38,7 +38,7 @@ namespace VideoGame.Inventory {
         }
 
 
-        public override bool Transfer(IItem item, PlayerInventory target) {
+        public override bool Transfer(IItem item, IInventory target) {
             int index = content.IndexOf(item);
             if (index == -1)
                 return false;
