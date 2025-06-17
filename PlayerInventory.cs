@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace VideoGame.Inventory {
 
-    public partial class PlayerInventory:BaseInventory {
+    public partial class PlayerInventory : BaseInventory {
 
         /// <summary>
         /// Jugador que contiene al inventario
@@ -18,9 +18,11 @@ namespace VideoGame.Inventory {
         /// </summary>
         /// <param name="player">Dueño del inventario</param>
         /// <param name="size">Capacidad máxima del inventario</param>
-        public PlayerInventory(Player player, int size = 10):base(size) {
+        public PlayerInventory(Player player, int size = 10) : base(size) {
             this.parent = player;
         }
+
+        
 
     }
 }

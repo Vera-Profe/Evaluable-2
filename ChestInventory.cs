@@ -13,7 +13,7 @@ namespace VideoGame.Inventory {
         /// <summary>
         /// Crea el inventario asociado a un jugador
         /// </summary>
-        /// <param name="character">Dueño del inventario</param>
+
         /// <param name="size">Capacidad máxima del inventario</param>
         protected ChestInventory(int size = 10) : base(size) {
 
@@ -21,7 +21,7 @@ namespace VideoGame.Inventory {
 
         public ChestInventory(params ICollection<IItem?> items) : base(0) {
             content = items.Distinct().ToArray();
-            this.Size = content.Length;
+            this.Size = content.Count;
         }
 
 

@@ -1,4 +1,5 @@
 
+using System.Collections;
 using System.Data;
 using System.Linq;
 
@@ -11,7 +12,7 @@ namespace VideoGame.Inventory {
         /// </summary>
         public int Size { get; protected set; }
 
-        protected IItem?[] content;
+        protected IList<IItem?> content;
 
 
         /// <summary>
@@ -22,6 +23,7 @@ namespace VideoGame.Inventory {
             this.Size = size;
             content = new IItem[size];
         }
+        
 
         /// <summary>
         /// Guarda un item en el inventario
@@ -32,8 +34,9 @@ namespace VideoGame.Inventory {
                 return false;
 
             int? freeIndex = null;
-            foreach (int index in Enumerable.Range(0, content.Length)) {
-                if (content[index] == item) { 
+
+            foreach (int index in Enumerable.Range(0, content.Count)) {
+                if (content is IItem?[] array && array[index] == item) {
                     return true; //Ya está guardado
                 }
                 if (freeIndex == null && content[index] == null) {
@@ -42,6 +45,11 @@ namespace VideoGame.Inventory {
             }
             if (freeIndex != null) {
                 ForceStore(item, (int)freeIndex);
+                return true;
+            }
+            // Hueco libre no encontrado
+            if ( content.Count < Size && content is List<IItem?>) {
+                ForceAdd(item);
                 return true;
             }
             return false;
@@ -55,18 +63,41 @@ namespace VideoGame.Inventory {
                 return true;
             if (content[index] != null)
                 return false;
-            if(Contains(item))
+            if (Contains(item))
                 return false;
-            ForceStore(item, index);
-            return true;
+            if (!isValidSlot(index))
+                return false;
+            // Insertar    
+            if (isValidIndex(index)) {
+                ForceStore(item, index);
+                return true;
+            }
+            else if(content is List<IItem>){
+                ForceAddAt(item, index);
+                return true;
+            }
+            return false;
         }
 
         protected virtual void ForceStore(IItem item, int index) {
             (item as Item)?.MoveTo(this);
             content[index] = item;
         }
+        
+        protected virtual void ForceAdd(IItem item) {
+            content.Add(item);
+            (item as Item)?.MoveTo(this);
+        }
 
-        protected virtual void ForceDrop( int index) {
+        protected virtual void ForceAddAt(IItem item, int index) {
+            while (content.Count < index - 1) {
+                content.Add(null);
+            }
+            content.Add(item);
+            (item as Item)?.MoveTo(this);
+        }
+
+        protected virtual void ForceDrop(int index) {
             (content[index] as Item)?.MoveTo(null);
             content[index] = null;
         }
@@ -86,7 +117,7 @@ namespace VideoGame.Inventory {
         /// </summary>
         public virtual bool Drop(IItem item) {
 
-            int index = Array.IndexOf(content,item);
+            int index = content.IndexOf(item);
             if (index == -1)
                 return false;
             ForceDrop(index);
@@ -104,7 +135,15 @@ namespace VideoGame.Inventory {
         }
 
         public virtual bool isValidIndex(int index) {
-            return index < 0 || index >= content.Length;
+            return index < 0 || index >= content.Count;
+        }
+        
+        /// <summary>
+        /// Comprueba si es un número e slot que debería poder usarse
+        /// </summary>
+        /// <param name="index"></param>
+        public virtual bool isValidSlot(int index) {
+            return index < 0 || index >= Size;
         }
 
 
@@ -112,7 +151,7 @@ namespace VideoGame.Inventory {
         /// TODO: Implementar
         /// </summary>
         public virtual ICollection<IItem> ListItems() {
-            return (ICollection<IItem>) content.Where(value => value != null).ToArray();
+            return (ICollection<IItem>)content.Where(value => value != null).ToArray();
         }
 
         /// <summary>
@@ -157,7 +196,7 @@ namespace VideoGame.Inventory {
         /// TODO: Implementar
         /// </summary>
         public virtual bool Transfer(IItem item, PlayerInventory target) {
-            int index = Array.IndexOf(content,item);
+            int index = content.IndexOf(item);
             if (index == -1)
                 return false;
             if (!Drop(index))

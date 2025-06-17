@@ -33,12 +33,13 @@ namespace VideoGame.Inventory {
         /// Oye no que esto no rula, el NPC no puede hacer drop
         /// </summary>
         public override bool Drop(int index) {
+            
             return false;
         }
 
 
         public override bool Transfer(IItem item, PlayerInventory target) {
-            int index = Array.IndexOf(content,item);
+            int index = content.IndexOf(item);
             if (index == -1)
                 return false;
             if (!base.Drop(index))
